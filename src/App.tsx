@@ -29,7 +29,6 @@ import {
     Timer,
     Mountain,
     Footprints,
-    Calendar,
 } from 'lucide-react';
 import { SKYFLOW_CONFIG } from './config/skyflow';
 import profileImage from './assets/profile.png';
@@ -1262,80 +1261,34 @@ export default function MomentsApp() {
                                                             </span>
                                                         </div>
 
-                                                        <div className="space-y-3">
-                                                            {record.fields?.date_of_birth && (
-                                                                <div className="flex items-start gap-3">
-                                                                    <Calendar size={16} className="text-stone-400 mt-0.5 flex-shrink-0" />
-                                                                    <div>
-                                                                        <p className="text-xs font-medium text-stone-500">Date</p>
-                                                                        <p className="text-sm text-stone-900">{record.fields.date_of_birth}</p>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-
-                                                            {record.fields?.nationality && (
-                                                                <div className="flex items-start gap-3">
-                                                                    <MapPin size={16} className="text-stone-400 mt-0.5 flex-shrink-0" />
-                                                                    <div>
-                                                                        <p className="text-xs font-medium text-stone-500">Nationality</p>
-                                                                        <p className="text-sm text-stone-900">{record.fields.nationality}</p>
-                                                                    </div>
-                                                                </div>
-                                                            )}
-
+                                                        <div className="space-y-4">
+                                                            {/* Name - Display prominently */}
                                                             {record.fields?.name && (
-                                                                <div className="border-t border-stone-200 pt-3 mt-3">
+                                                                <div className="bg-white p-4 rounded-xl border border-stone-200">
                                                                     <p className="text-xs font-bold text-stone-500 mb-2 uppercase tracking-wide">Name</p>
-                                                                    {record.fields.name.prefix && (
-                                                                        <div className="mb-2">
-                                                                            <p className="text-xs font-medium text-stone-500">Prefix</p>
-                                                                            <p className="text-sm text-stone-900 bg-white p-2 rounded-lg border border-stone-200">
-                                                                                {record.fields.name.prefix}
-                                                                            </p>
-                                                                        </div>
-                                                                    )}
-                                                                    {record.fields.name.first_name && (
-                                                                        <div className="mb-2">
-                                                                            <p className="text-xs font-medium text-stone-500">First Name</p>
-                                                                            <p className="text-sm text-stone-900 bg-white p-2 rounded-lg border border-stone-200 break-words">
-                                                                                {record.tokens?.name?.first_name || record.fields.name.first_name}
-                                                                            </p>
-                                                                            {record.tokens?.name?.first_name && (
-                                                                                <p className="text-[10px] text-emerald-600 mt-1 flex items-center gap-1">
-                                                                                    <Lock size={8} /> Tokenized
-                                                                                </p>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                    {record.fields.name.middle_name && (
-                                                                        <div className="mb-2">
-                                                                            <p className="text-xs font-medium text-stone-500">Middle Name</p>
-                                                                            <p className="text-sm text-stone-900 bg-white p-2 rounded-lg border border-stone-200">
-                                                                                {record.tokens?.name?.middle_name || record.fields.name.middle_name}
-                                                                            </p>
-                                                                        </div>
-                                                                    )}
-                                                                    {record.fields.name.last_name && (
-                                                                        <div className="mb-2">
-                                                                            <p className="text-xs font-medium text-stone-500">Last Name</p>
-                                                                            <p className="text-sm text-stone-900 bg-white p-2 rounded-lg border border-stone-200 break-words">
-                                                                                {record.tokens?.name?.last_name || record.fields.name.last_name}
-                                                                            </p>
-                                                                            {record.tokens?.name?.last_name && (
-                                                                                <p className="text-[10px] text-emerald-600 mt-1 flex items-center gap-1">
-                                                                                    <Lock size={8} /> Tokenized
-                                                                                </p>
-                                                                            )}
-                                                                        </div>
-                                                                    )}
-                                                                    {record.fields.name.suffix && (
-                                                                        <div className="mb-2">
-                                                                            <p className="text-xs font-medium text-stone-500">Suffix</p>
-                                                                            <p className="text-sm text-stone-900 bg-white p-2 rounded-lg border border-stone-200">
-                                                                                {record.fields.name.suffix}
-                                                                            </p>
-                                                                        </div>
-                                                                    )}
+                                                                    <p className="text-lg font-bold text-stone-900">
+                                                                        {record.fields.name.prefix && `${record.fields.name.prefix} `}
+                                                                        {record.tokens?.name?.first_name || record.fields.name.first_name}
+                                                                        {record.fields.name.middle_name && ` ${record.tokens?.name?.middle_name || record.fields.name.middle_name}`}
+                                                                        {record.fields.name.last_name && ` ${record.tokens?.name?.last_name || record.fields.name.last_name}`}
+                                                                        {record.fields.name.suffix && ` ${record.fields.name.suffix}`}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Date of Birth */}
+                                                            {record.fields?.date_of_birth && (
+                                                                <div className="bg-white p-4 rounded-xl border border-stone-200">
+                                                                    <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Date of Birth</p>
+                                                                    <p className="text-base font-medium text-stone-900">{record.fields.date_of_birth}</p>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Nationality */}
+                                                            {record.fields?.nationality && (
+                                                                <div className="bg-white p-4 rounded-xl border border-stone-200">
+                                                                    <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Nationality</p>
+                                                                    <p className="text-base font-medium text-stone-900">{record.fields.nationality}</p>
                                                                 </div>
                                                             )}
 
@@ -1413,25 +1366,6 @@ export default function MomentsApp() {
                                     ) : null}
                                 </div>
                             </div>
-
-                            {profileData.length > 0 && (
-                                <div className="mt-6 grid grid-cols-2 gap-4">
-                                    <div className="bg-white rounded-2xl p-4 border border-stone-100">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Database size={16} className="text-indigo-600" />
-                                            <p className="text-xs font-medium text-stone-500">Status</p>
-                                        </div>
-                                        <p className="text-2xl font-bold text-stone-900">✓</p>
-                                    </div>
-                                    <div className="bg-white rounded-2xl p-4 border border-stone-100">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Lock size={16} className="text-emerald-600" />
-                                            <p className="text-xs font-medium text-stone-500">Encrypted</p>
-                                        </div>
-                                        <p className="text-2xl font-bold text-stone-900">✓</p>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
                 )}
