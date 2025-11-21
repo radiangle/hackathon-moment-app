@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     PenLine,
     Send,
@@ -10,17 +10,26 @@ import {
     CheckCircle2,
     Clock,
     ChevronLeft,
+    RefreshCw,
     BarChart3,
     Calendar as CalendarIcon,
     ChevronRight,
+    MoreHorizontal,
+    History,
     MapPin,
     Camera,
+    Smile,
     Zap,
+    TrendingUp,
     ShieldCheck,
+    MessageCircle,
     Edit2,
     Share2,
+    Download,
     ChevronDown,
-    Activity
+    Activity,
+    LayoutGrid,
+    Rows
 } from 'lucide-react';
 
 // --- Types ---
@@ -215,7 +224,7 @@ const FloatingMomo = ({ state }: { state: 'idle' | 'thinking' | 'happy' }) => {
 
 // --- Components ---
 
-export default function App() {
+export default function MomentsApp() {
     const [view, setView] = useState<'calendar' | 'input' | 'processing' | 'dashboard'>('input');
     const [calendarMode, setCalendarMode] = useState<'month' | 'week'>('month');
     const [selectedDate, setSelectedDate] = useState<string>(TODAY);
@@ -234,6 +243,7 @@ export default function App() {
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
+    // Processing Steps
     const processingSteps = [
         { text: "Encrypting & Vaulting to Skyflow...", icon: Lock },
         { text: "Analyzing context (Postman Weather)...", icon: CloudRain },
@@ -361,10 +371,9 @@ export default function App() {
         const week = [];
         const current = new Date(date);
         const day = current.getDay();
-        // Adjust to start on Sunday
+        // Adjust to start on Sunday (or Monday if preferred)
         const diff = current.getDate() - day;
-        const startOfWeek = new Date(current);
-        startOfWeek.setDate(diff);
+        const startOfWeek = new Date(current.setDate(diff));
 
         for (let i = 0; i < 7; i++) {
             const d = new Date(startOfWeek);
@@ -427,7 +436,7 @@ export default function App() {
                     </div>
                     {view === 'input' && (
                         <p className="text-xs text-stone-400 mt-2 font-medium animate-fade-in">
-                            Drop moments throughout your day. I'll take care of the story.
+                            Drop moments throughout your day. I’ll take care of the story.
                         </p>
                     )}
                 </div>
@@ -493,11 +502,7 @@ export default function App() {
                             <h2 className="text-sm font-bold text-stone-800">
                                 {calendarMode === 'month'
                                     ? `${monthName} ${currentYear}`
-                                    : (() => {
-                                        const weekStart = new Date(displayedDate);
-                                        weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-                                        return `Week of ${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-                                    })()
+                                    : `Week of ${new Date(displayedDate.setDate(displayedDate.getDate() - displayedDate.getDay())).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
                                 }
                             </h2>
                             <button onClick={handleNextPeriod} className="p-2 hover:bg-white rounded-lg shadow-sm transition-all text-stone-500"><ChevronRight size={18} /></button>
@@ -541,6 +546,7 @@ export default function App() {
                             <div className="space-y-3 mb-8 animate-fade-in">
                                 {getWeekDates(displayedDate).map((date, i) => {
                                     const dateStr = date.toISOString().split('T')[0];
+                                    const isToday = dateStr === TODAY;
                                     const dayData = data[dateStr];
                                     const hasSummary = !!dayData?.summary;
                                     const moodClass = getMoodColor(dayData?.summary?.mood);
@@ -878,4 +884,3 @@ export default function App() {
         </div>
     );
 }
-
