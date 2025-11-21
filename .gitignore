@@ -31,3 +31,10 @@ dist-ssr
 .env.local
 .env.production.local
 .env.development.local
+
+# Backup files
+*.backup
+*_backup.*
+moment_with_skyflow.tsx
+moment.tsx
+momentv4.tsx
