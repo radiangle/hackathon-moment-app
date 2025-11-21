@@ -32,6 +32,7 @@ import {
     Calendar,
 } from 'lucide-react';
 import { SKYFLOW_CONFIG } from './config/skyflow';
+import profileImage from './assets/profile.png';
 
 // --- Types ---
 type Emotion = 'happy' | 'calm' | 'stressed' | 'tired' | 'excited' | 'neutral';
@@ -508,18 +509,17 @@ export default function MomentsApp() {
         setError(null);
         try {
             const mockProfile = {
-                date_of_birth: '1990-05-15',
-                nationality: 'AMERICAN',
-                gender: 'FEMALE',
+                date_of_birth: '1995-01-01',
+                nationality: 'VIETNAMESE',
+                gender: 'MALE',
                 race: 'ASIAN',
                 ethnicity: 'NOT_HISPANIC_OR_LATINO',
                 preferred_language: 'ENGLISH_LANGUAGE',
-                marital_status: 'MARRIED',
+                marital_status: 'SINGLE',
                 name: {
-                    prefix: 'Ms.',
-                    first_name: 'Jane',
-                    middle_name: 'Marie',
-                    last_name: 'Doe',
+                    prefix: 'Mr.',
+                    first_name: 'Henry',
+                    last_name: 'Mai',
                     use: 'USUAL'
                 },
                 addresses: {
@@ -535,7 +535,7 @@ export default function MomentsApp() {
                     type: 'MOBILE'
                 },
                 emails: {
-                    value: 'jane.doe@example.com',
+                    value: 'henry.mai@example.com',
                     type: 'PERSONAL'
                 }
             };
@@ -680,9 +680,22 @@ export default function MomentsApp() {
 
                                     <button
                                         onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                                        className="relative w-9 h-9 rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 border-2 border-white shadow-sm flex items-center justify-center transition-transform active:scale-95"
+                                        className="relative w-9 h-9 rounded-full border-2 border-white shadow-sm overflow-hidden transition-transform active:scale-95 bg-gradient-to-br from-violet-600 to-indigo-600"
                                     >
-                                        <span className="text-xs font-bold text-white">HM</span>
+                                        <img 
+                                            src={profileImage} 
+                                            alt="Henry Mai" 
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                // Fallback to initials if image not found
+                                                const target = e.target as HTMLImageElement;
+                                                target.style.display = 'none';
+                                                const parent = target.parentElement;
+                                                if (parent) {
+                                                    parent.innerHTML = '<span class="text-xs font-bold text-white w-full h-full flex items-center justify-center">HM</span>';
+                                                }
+                                            }}
+                                        />
                                     </button>
 
                                     {isProfileMenuOpen && (
@@ -1188,8 +1201,24 @@ export default function MomentsApp() {
                             <div className="bg-white rounded-3xl shadow-xl border border-stone-100 overflow-hidden">
                                 <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-6 text-white">
                                     <div className="flex items-center gap-4 mb-4">
-                                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-2xl font-bold">
-                                            {profileData.length > 0 ? '👤' : '🔒'}
+                                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center overflow-hidden border-2 border-white/30">
+                                            {profileData.length > 0 ? (
+                                                <img 
+                                                    src={profileImage} 
+                                                    alt="Henry Mai" 
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        const target = e.target as HTMLImageElement;
+                                                        target.style.display = 'none';
+                                                        const parent = target.parentElement;
+                                                        if (parent) {
+                                                            parent.innerHTML = '<span class="text-2xl font-bold">👤</span>';
+                                                        }
+                                                    }}
+                                                />
+                                            ) : (
+                                                <span className="text-2xl font-bold">🔒</span>
+                                            )}
                                         </div>
                                         <div>
                                             <h2 className="text-xl font-bold">User Profile</h2>
