@@ -51,8 +51,8 @@ export interface UserProfileData {
  */
 export function createMockUserProfile(): UserProfileData {
     return {
-        date_of_birth: '1990-05-15',
-        nationality: 'AMERICAN',
+        date_of_birth: '1995-01-01',
+        nationality: 'vietnam',
         gender: 'FEMALE',
         race: 'ASIAN',
         ethnicity: 'NOT_HISPANIC_OR_LATINO',
@@ -60,10 +60,9 @@ export function createMockUserProfile(): UserProfileData {
         preferred_language: 'ENGLISH_LANGUAGE',
         marital_status: 'MARRIED',
         name: {
-            prefix: 'Ms.',
-            first_name: 'Jane',
-            middle_name: 'Marie',
-            last_name: 'Doe',
+            prefix: 'Mr.',
+            first_name: 'Henry',
+            last_name: 'Mai',
             suffix: '',
             use: 'USUAL'
         },

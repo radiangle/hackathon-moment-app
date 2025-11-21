@@ -18,7 +18,7 @@ export function createMockProfile(overrides?: Partial<MockProfile>): MockProfile
     
     return {
         date_of_birth: today,
-        nationality: 'AMERICAN', // Must be a valid predefined value
+        nationality: 'vietnam', // Must be a valid predefined value
         identifiers_skyflow_id: 'mock-identifier-12345',
         contacts_skyflow_id: ['contact-1', 'contact-2'],
         ...overrides
@@ -29,6 +29,7 @@ export function createMockProfile(overrides?: Partial<MockProfile>): MockProfile
  * Valid nationality values for Skyflow (based on common values)
  */
 export const VALID_NATIONALITIES = [
+    'vietnam',
     'AMERICAN',
     'CANADIAN',
     'BRITISH',
@@ -51,7 +52,7 @@ export type ValidNationality = typeof VALID_NATIONALITIES[number];
  */
 export function createMockProfiles(count: number = 3): MockProfile[] {
     const profiles: MockProfile[] = [];
-    const nationalities: ValidNationality[] = ['AMERICAN', 'CANADIAN', 'BRITISH'];
+    const nationalities: ValidNationality[] = ['vietnam', 'AMERICAN', 'CANADIAN'];
     
     for (let i = 0; i < count; i++) {
         const date = new Date();

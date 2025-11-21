@@ -65,7 +65,7 @@ export async function insertMockProfile(profile?: Partial<{
 export async function createSampleMockProfile() {
     const sampleProfile = {
         date_of_birth: '1990-01-15',
-        nationality: 'AMERICAN',
+        nationality: 'vietnam',
         identifiers_skyflow_id: 'sample-profile-123',
         contacts_skyflow_id: ['contact-abc-123', 'contact-xyz-789']
     };
