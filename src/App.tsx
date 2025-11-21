@@ -607,7 +607,13 @@ export default function MomentsApp() {
         if (view === 'calendar') return 'Your Life';
         if (view === 'processing') return 'Momo Thinking...';
         if (view === 'dashboard') return 'Daily Story';
-        if (view === 'profile') return 'Profile';
+        if (view === 'profile') {
+            if (profileData.length > 0 && profileData[0].fields?.name) {
+                const name = profileData[0].fields.name;
+                return `${name.prefix ? name.prefix + ' ' : ''}${name.first_name || ''} ${name.last_name || ''}`.trim();
+            }
+            return 'Profile';
+        }
         return 'Moments';
     };
 
@@ -1220,7 +1226,16 @@ export default function MomentsApp() {
                                             )}
                                         </div>
                                         <div>
-                                            <h2 className="text-xl font-bold">User Profile</h2>
+                                            <h2 className="text-xl font-bold">
+                                                {profileData.length > 0 && profileData[0].fields?.name ? (
+                                                    <>
+                                                        {profileData[0].fields.name.prefix && `${profileData[0].fields.name.prefix} `}
+                                                        {profileData[0].fields.name.first_name} {profileData[0].fields.name.last_name}
+                                                    </>
+                                                ) : (
+                                                    'User Profile'
+                                                )}
+                                            </h2>
                                             <p className="text-sm text-white/80">{profileData.length > 0 ? 'Profile loaded' : 'No profile found'}</p>
                                         </div>
                                     </div>
@@ -1280,7 +1295,17 @@ export default function MomentsApp() {
                                                             {record.fields?.date_of_birth && (
                                                                 <div className="bg-white p-4 rounded-xl border border-stone-200">
                                                                     <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Date of Birth</p>
-                                                                    <p className="text-base font-medium text-stone-900">{record.fields.date_of_birth}</p>
+                                                                    <p className="text-base font-medium text-stone-900">
+                                                                        {(() => {
+                                                                            const dateStr = record.fields.date_of_birth;
+                                                                            // Convert YYYY-MM-DD to DD-MM-YYYY
+                                                                            if (dateStr && dateStr.includes('-')) {
+                                                                                const [year, month, day] = dateStr.split('-');
+                                                                                return `${day}-${month}-${year}`;
+                                                                            }
+                                                                            return dateStr;
+                                                                        })()}
+                                                                    </p>
                                                                 </div>
                                                             )}
 
@@ -1288,7 +1313,9 @@ export default function MomentsApp() {
                                                             {record.fields?.nationality && (
                                                                 <div className="bg-white p-4 rounded-xl border border-stone-200">
                                                                     <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Nationality</p>
-                                                                    <p className="text-base font-medium text-stone-900">{record.fields.nationality}</p>
+                                                                    <p className="text-base font-medium text-stone-900 capitalize">
+                                                                        {record.fields.nationality.toLowerCase() === 'vietnam' ? 'Vietnam' : record.fields.nationality}
+                                                                    </p>
                                                                 </div>
                                                             )}
 
