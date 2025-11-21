@@ -509,7 +509,7 @@ export default function MomentsApp() {
         try {
             const mockProfile = {
                 date_of_birth: '1995-01-01',
-                nationality: 'VIETNAMESE',
+                nationality: 'vietnam',
                 gender: 'MALE',
                 race: 'ASIAN',
                 ethnicity: 'NOT_HISPANIC_OR_LATINO',
