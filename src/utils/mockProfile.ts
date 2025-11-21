@@ -30,7 +30,6 @@ export function createMockProfile(overrides?: Partial<MockProfile>): MockProfile
  */
 export const VALID_NATIONALITIES = [
     'vietnam',
-    'AMERICAN',
     'CANADIAN',
     'BRITISH',
     'AUSTRALIAN',
@@ -52,7 +51,7 @@ export type ValidNationality = typeof VALID_NATIONALITIES[number];
  */
 export function createMockProfiles(count: number = 3): MockProfile[] {
     const profiles: MockProfile[] = [];
-    const nationalities: ValidNationality[] = ['vietnam', 'AMERICAN', 'CANADIAN'];
+    const nationalities: ValidNationality[] = ['vietnam', 'CANADIAN', 'BRITISH'];
     
     for (let i = 0; i < count; i++) {
         const date = new Date();
