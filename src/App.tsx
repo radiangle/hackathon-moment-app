@@ -523,6 +523,25 @@ export default function MomentsApp() {
         setDisplayedDate(newDate);
     };
 
+    const handleGoToToday = () => {
+        setDisplayedDate(new Date());
+    };
+
+    const isTodayDisplayed = () => {
+        const today = new Date();
+        const displayed = new Date(displayedDate);
+        if (calendarMode === 'month') {
+            return today.getMonth() === displayed.getMonth() && today.getFullYear() === displayed.getFullYear();
+        } else {
+            // Check if today is in the displayed week
+            const weekStart = new Date(displayed);
+            weekStart.setDate(displayed.getDate() - displayed.getDay());
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            return today >= weekStart && today <= weekEnd;
+        }
+    };
+
     const loadProfile = async () => {
         setIsLoadingProfile(true);
         setError(null);
@@ -861,12 +880,22 @@ export default function MomentsApp() {
 
                         <div className="flex items-center justify-between mb-6 bg-stone-50 p-2 rounded-xl">
                             <button onClick={handlePrevPeriod} className="p-2 hover:bg-white rounded-lg shadow-sm transition-all text-stone-500"><ChevronLeft size={18} /></button>
-                            <h2 className="text-sm font-bold text-stone-800">
-                                {calendarMode === 'month'
-                                    ? `${monthName} ${currentYear}`
-                                    : `Week of ${new Date(displayedDate.setDate(displayedDate.getDate() - displayedDate.getDay())).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-                                }
-                            </h2>
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-sm font-bold text-stone-800">
+                                    {calendarMode === 'month'
+                                        ? `${monthName} ${currentYear}`
+                                        : `Week of ${new Date(displayedDate.setDate(displayedDate.getDate() - displayedDate.getDay())).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                                    }
+                                </h2>
+                                {!isTodayDisplayed() && (
+                                    <button
+                                        onClick={handleGoToToday}
+                                        className="px-3 py-1 text-[10px] font-bold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all shadow-sm"
+                                    >
+                                        Today
+                                    </button>
+                                )}
+                            </div>
                             <button onClick={handleNextPeriod} className="p-2 hover:bg-white rounded-lg shadow-sm transition-all text-stone-500"><ChevronRight size={18} /></button>
                         </div>
 
