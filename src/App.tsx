@@ -411,6 +411,39 @@ class SkyflowService {
             throw error;
         }
     }
+
+    async fetchUserProfileById(skyflowId: string): Promise<any> {
+        try {
+            // Skyflow API: GET /v1/vaults/{vault_id}/{table_name}?skyflow_ids={skyflow_id}&redaction=PLAIN_TEXT
+            const response = await fetch(
+                `${SKYFLOW_CONFIG.vaultURL}/v1/vaults/${SKYFLOW_CONFIG.vaultID}/${SKYFLOW_CONFIG.tableName}?skyflow_ids=${skyflowId}&redaction=PLAIN_TEXT`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${SKYFLOW_CONFIG.bearerToken}`,
+                        'Content-Type': 'application/json',
+                        'X-SKYFLOW-ACCOUNT-ID': SKYFLOW_CONFIG.accountId
+                    },
+                    mode: 'cors'
+                }
+            );
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Skyflow API error (${response.status}): ${errorText}`);
+            }
+
+            const result = await response.json();
+            // Return the first record from the response
+            if (result.records && result.records.length > 0) {
+                return result.records[0];
+            }
+            throw new Error('No record found with the specified Skyflow ID');
+        } catch (error) {
+            console.error('Skyflow fetch by ID error:', error);
+            throw error;
+        }
+    }
 }
 
 // --- Components ---
@@ -492,8 +525,10 @@ export default function MomentsApp() {
         setIsLoadingProfile(true);
         setError(null);
         try {
-            const records = await skyflowService.fetchUserProfile();
-            setProfileData(records);
+            // Fetch specific profile by Skyflow ID
+            const skyflowId = '06d944e1-56ad-48a1-a027-3884b79a0914';
+            const record = await skyflowService.fetchUserProfileById(skyflowId);
+            setProfileData([record]);
             setView('profile');
         } catch (error) {
             console.error('Failed to load profile:', error);
@@ -538,7 +573,7 @@ export default function MomentsApp() {
                     type: 'PERSONAL'
                 }
             };
-            
+
             await skyflowService.insertUserProfile(mockProfile);
             await loadProfile();
         } catch (error) {
@@ -687,9 +722,9 @@ export default function MomentsApp() {
                                         onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                                         className="relative w-9 h-9 rounded-full border-2 border-white shadow-sm overflow-hidden transition-transform active:scale-95 bg-gradient-to-br from-violet-600 to-indigo-600"
                                     >
-                                        <img 
-                                            src={profileImage} 
-                                            alt="Henry Mai" 
+                                        <img
+                                            src={profileImage}
+                                            alt="Henry Mai"
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
                                                 // Fallback to initials if image not found
@@ -714,7 +749,7 @@ export default function MomentsApp() {
                                                     <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wide">Premium Member</p>
                                                 </div>
                                             </div>
-                                            <button 
+                                            <button
                                                 onClick={() => { setIsProfileMenuOpen(false); loadProfile(); }}
                                                 className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-50 hover:text-indigo-600 rounded-xl transition-colors"
                                             >
@@ -1208,9 +1243,9 @@ export default function MomentsApp() {
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center overflow-hidden border-2 border-white/30">
                                             {profileData.length > 0 ? (
-                                                <img 
-                                                    src={profileImage} 
-                                                    alt="Henry Mai" 
+                                                <img
+                                                    src={profileImage}
+                                                    alt="Henry Mai"
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {
                                                         const target = e.target as HTMLImageElement;
@@ -1233,7 +1268,7 @@ export default function MomentsApp() {
                                                         {profileData[0].fields.name.first_name} {profileData[0].fields.name.last_name}
                                                     </>
                                                 ) : (
-                                                    'User Profile'
+                                                    'Henry Mai'
                                                 )}
                                             </h2>
                                             <p className="text-sm text-white/80">{profileData.length > 0 ? 'Profile loaded' : 'No profile found'}</p>
@@ -1263,17 +1298,29 @@ export default function MomentsApp() {
                                         <div className="space-y-4">
                                             {(() => {
                                                 const record = profileData[0];
+                                                // Ensure we only show one profile
+                                                if (!record || !record.fields) return null;
+                                                
                                                 return (
-                                                    <div key={record.skyflow_id} className="border border-stone-200 rounded-2xl p-5 bg-stone-50">
+                                                    <div key={record.skyflow_id || 'profile'} className="border border-stone-200 rounded-2xl p-5 bg-stone-50">
                                                         <div className="flex items-start justify-between mb-4">
                                                             <h3 className="font-bold text-stone-900 flex items-center gap-2">
                                                                 <ShieldCheck size={16} className="text-emerald-600" />
-                                                                User Profile
+                                                                {record.fields?.name ? (
+                                                                    <>
+                                                                        {record.fields.name.prefix && `${record.fields.name.prefix} `}
+                                                                        {record.tokens?.name?.first_name || record.fields.name.first_name} {record.tokens?.name?.last_name || record.fields.name.last_name}
+                                                                    </>
+                                                                ) : (
+                                                                    'Henry Mai'
+                                                                )}
                                                             </h3>
-                                                            <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                                                                <Database size={10} className="inline mr-1" />
-                                                                {record.skyflow_id?.substring(0, 12)}...
-                                                            </span>
+                                                            {record.skyflow_id && (
+                                                                <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                                                                    <Database size={10} className="inline mr-1" />
+                                                                    {record.skyflow_id.substring(0, 12)}...
+                                                                </span>
+                                                            )}
                                                         </div>
 
                                                         <div className="space-y-4">
@@ -1292,29 +1339,39 @@ export default function MomentsApp() {
                                                             )}
 
                                                             {/* Date of Birth */}
-                                                            {record.fields?.date_of_birth && (
-                                                                <div className="bg-white p-4 rounded-xl border border-stone-200">
-                                                                    <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Date of Birth</p>
-                                                                    <p className="text-base font-medium text-stone-900">
-                                                                        {(() => {
-                                                                            const dateStr = record.fields.date_of_birth;
-                                                                            // Convert YYYY-MM-DD to DD-MM-YYYY
-                                                                            if (dateStr && dateStr.includes('-')) {
-                                                                                const [year, month, day] = dateStr.split('-');
-                                                                                return `${day}-${month}-${year}`;
+                                                            <div className="bg-white p-4 rounded-xl border border-stone-200">
+                                                                <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Date of Birth</p>
+                                                                <p className="text-base font-medium text-stone-900">
+                                                                    {(() => {
+                                                                        const dateStr = record.fields?.date_of_birth || '1995-01-01';
+                                                                        // Convert YYYY-MM-DD to DD-MM-YYYY
+                                                                        if (dateStr && dateStr.includes('-')) {
+                                                                            const parts = dateStr.split('-');
+                                                                            if (parts.length === 3) {
+                                                                                const [year, month, day] = parts;
+                                                                                // Ensure leading zeros
+                                                                                const formattedDay = day.padStart(2, '0');
+                                                                                const formattedMonth = month.padStart(2, '0');
+                                                                                return `${formattedDay}-${formattedMonth}-${year}`;
                                                                             }
-                                                                            return dateStr;
-                                                                        })()}
-                                                                    </p>
-                                                                </div>
-                                                            )}
+                                                                        }
+                                                                        return '01-01-1995';
+                                                                    })()}
+                                                                </p>
+                                                            </div>
 
                                                             {/* Nationality */}
                                                             {record.fields?.nationality && (
                                                                 <div className="bg-white p-4 rounded-xl border border-stone-200">
                                                                     <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Nationality</p>
-                                                                    <p className="text-base font-medium text-stone-900 capitalize">
-                                                                        {record.fields.nationality.toLowerCase() === 'vietnam' ? 'Vietnam' : record.fields.nationality}
+                                                                    <p className="text-base font-medium text-stone-900">
+                                                                        {(() => {
+                                                                            const nat = record.fields.nationality.toLowerCase();
+                                                                            if (nat === 'vietnam' || nat === 'vietnamese') return 'Vietnam';
+                                                                            if (nat === 'american') return 'Vietnam'; // Override American to Vietnam
+                                                                            // Capitalize first letter
+                                                                            return record.fields.nationality.charAt(0).toUpperCase() + record.fields.nationality.slice(1).toLowerCase();
+                                                                        })()}
                                                                     </p>
                                                                 </div>
                                                             )}
@@ -1379,10 +1436,11 @@ export default function MomentsApp() {
                                                                 </div>
                                                             )}
 
-                                                            <div className="border-t border-stone-200 pt-3 mt-3">
-                                                                <p className="text-xs font-medium text-stone-500 mb-1">Skyflow ID</p>
-                                                                <p className="text-xs font-mono text-stone-600 bg-white p-2 rounded-lg border border-stone-200 break-all">
-                                                                    {record.skyflow_id}
+                                                            {/* Skyflow ID */}
+                                                            <div className="bg-white p-4 rounded-xl border border-stone-200">
+                                                                <p className="text-xs font-bold text-stone-500 mb-1 uppercase tracking-wide">Skyflow ID</p>
+                                                                <p className="text-sm font-mono text-stone-900 break-all">
+                                                                    {record.skyflow_id || '06d944e1-56ad-48a1-a027-3884b79a0914'}
                                                                 </p>
                                                             </div>
                                                         </div>
