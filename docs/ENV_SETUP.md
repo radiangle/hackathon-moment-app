@@ -18,6 +18,7 @@ This project uses environment variables to securely store API keys and secrets. 
   VITE_SKYFLOW_TABLE_NAME=persons
   VITE_SKYFLOW_ACCOUNT_ID=your_account_id_here
   VITE_SKYFLOW_BEARER_TOKEN=your_bearer_token_here
+  VITE_CLAUDE_API_KEY=your_claude_api_key_here
   ```
 
 3. **Restart your dev server** after creating/updating `.env`:
@@ -41,6 +42,17 @@ When deploying to Vercel or other platforms:
 2. Use the same variable names (starting with `VITE_`)
 3. Never hardcode secrets in your code
 
+## Getting API Keys
+
+### Claude API Key
+1. Visit [Anthropic Console](https://console.anthropic.com/)
+2. Sign up or log in to your account
+3. Navigate to API Keys section
+4. Create a new API key
+5. Copy the key and add it to your `.env` file as `VITE_CLAUDE_API_KEY`
+
+**Note:** If Claude API key is not set, the app will fall back to mock summaries.
+
 ## Troubleshooting
 
 If you see errors about missing environment variables:
@@ -49,3 +61,4 @@ If you see errors about missing environment variables:
 - Verify all required variables are set
 - Restart the dev server after changes
 - Check that variable names start with `VITE_` (required for Vite)
+- **Claude API**: If summaries aren't generating, check the browser console for API errors. The app will fall back to mock summaries if Claude API is unavailable.

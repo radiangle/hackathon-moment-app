@@ -31,6 +31,7 @@ import {
     Footprints,
 } from 'lucide-react';
 import { SKYFLOW_CONFIG } from './config/skyflow';
+import ClaudeService from './utils/claudeService';
 import profileImage from './assets/profile.png';
 
 // --- Types ---
@@ -464,6 +465,7 @@ export default function MomentsApp() {
     const [, setError] = useState<string | null>(null);
 
     const skyflowService = SkyflowService.getInstance();
+    const claudeService = ClaudeService.getInstance();
 
     // Calendar Calculation Logic
     const currentYear = displayedDate.getFullYear();
@@ -612,27 +614,47 @@ export default function MomentsApp() {
         setTimeout(() => setShowSavedToast(false), 3000);
     };
 
-    const startProcessing = () => {
+    const startProcessing = async () => {
         setView('processing');
-        let currentStep = 0;
-        const interval = setInterval(() => {
-            setProcessingStep(currentStep);
-            currentStep++;
-            if (currentStep > processingSteps.length) {
-                clearInterval(interval);
-                const dayMoments = data[selectedDate]?.moments || [];
-                const newSummary = generateMockSummary(dayMoments);
-
-                setData(prev => ({
-                    ...prev,
-                    [selectedDate]: {
-                        moments: dayMoments,
-                        summary: newSummary
-                    }
-                }));
-                setTimeout(() => setView('dashboard'), 500);
-            }
-        }, 1000);
+        setProcessingStep(0);
+        
+        const dayMoments = data[selectedDate]?.moments || [];
+        
+        // Simulate processing steps with delays
+        for (let i = 0; i < processingSteps.length; i++) {
+            setProcessingStep(i);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        
+        // Set to the final step (Claude processing)
+        setProcessingStep(processingSteps.length - 1);
+        
+        try {
+            // Call Claude API to generate summary
+            const newSummary = await claudeService.generateSummary(dayMoments);
+            
+            setData(prev => ({
+                ...prev,
+                [selectedDate]: {
+                    moments: dayMoments,
+                    summary: newSummary
+                }
+            }));
+            
+            setTimeout(() => setView('dashboard'), 500);
+        } catch (error) {
+            console.error('Failed to generate summary:', error);
+            // Fallback to mock summary if Claude API fails
+            const fallbackSummary = generateMockSummary(dayMoments);
+            setData(prev => ({
+                ...prev,
+                [selectedDate]: {
+                    moments: dayMoments,
+                    summary: fallbackSummary
+                }
+            }));
+            setTimeout(() => setView('dashboard'), 500);
+        }
     };
 
     const currentMoments = data[selectedDate]?.moments || [];

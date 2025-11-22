@@ -108,6 +108,7 @@ See [docs/ENV_SETUP.md](./docs/ENV_SETUP.md) for configuration details and [sche
 - **Tailwind CSS** - Styling
 - **Lucide React** - Icons
 - **Skyflow** - Secure data storage
+- **Claude AI** - AI-powered daily summaries
 
 ## 📱 Features in Detail
 
@@ -124,7 +125,7 @@ See [docs/ENV_SETUP.md](./docs/ENV_SETUP.md) for configuration details and [sche
 - **Rich Metadata** - Location, weather, and timestamp tracking
 
 ### Daily Summaries
-- **AI-Generated Stories** - Personalized narratives from your moments
+- **AI-Generated Stories** - Personalized narratives from your moments powered by Claude AI
 - **Highlights** - Key moments with traceability to source
 - **Action Items** - Personalized recommendations
 - **Mood Tracking** - Visual mood representation
